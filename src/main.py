@@ -1,21 +1,22 @@
 import urwid 
-def exit_on_q(key):
-    if key in ('q', 'Q'):
-        raise urwid.ExitMainLoop()
-    
-palette = [
-    ('banner', 'black', 'light gray'),
-    ('streak', 'black', 'dark red'),
-    ('bg', 'black', 'dark blue'),
-]
+import os
+import colors
 
-txt = urwid.Text(('banner', u"nice change"), align = 'center')
+curr = os.listdir('.')
+prev = os.listdir('/')
 
-map1 = urwid.AttrMap(txt, 'streak')
-fill = urwid.Filler(map1)
-map2 = urwid.AttrMap(fill, 'bg')
-loop = urwid.MainLoop(map2, palette, unhandled_input=exit_on_q)
-# here, the unhandled input is a function that's called
-# when the input given by the user is not handled by any widget
-# of urwid 
+but = []
+
+palette = colors.colors
+
+for c in prev:
+    button = urwid.Text(('bright_cyan', c), align='center')
+
+    but.append(urwid.AttrMap(button, 'bg'))
+
+print(palette)
+
+main = urwid.ListBox(urwid.SimpleFocusListWalker(but))
+loop = urwid.MainLoop(main, palette)
+loop.screen.set_terminal_properties(colors=256)
 loop.run()
