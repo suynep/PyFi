@@ -40,8 +40,8 @@ class BrowserPanel(urwid.WidgetPlaceholder):
         body = []
         for oneFile in sorted(self.fileList):
             button = urwid.Button(oneFile)
-            if os.path.isdir(os.path.join(self.currentPath, oneFile)):
-                urwid.connect_signal(button, 'click', self.update_body, oneFile)
+            if os.path.isdir(os.path.join(self.currentPath, oneFile)): # check if the dir exists
+                urwid.connect_signal(button, 'click', self.update_body, oneFile) # standard signal handling
                 body.append(urwid.AttrMap(button, 'dirs', focus_map='dirsrev'))
             else:
                 body.append(urwid.AttrMap(button, None, focus_map='bodyrev'))
@@ -57,9 +57,9 @@ def exit_program(key):
         raise urwid.ExitMainLoop()
 
 def main():
-    panel1 = BrowserPanel('/')
-    panel2 = BrowserPanel('/')
-    main = urwid.Columns([panel1, panel2])
+    p1 = BrowserPanel('/')
+    p2 = BrowserPanel('/')
+    main = urwid.Columns([p1, p2])
     loop = urwid.MainLoop(main, palette, unhandled_input=exit_program)
     loop.run()
 
