@@ -9,6 +9,7 @@ dir = []
 dir.append(curr)
 dir.append(prev)
 but = []
+# this comment is added by bikesh
 
 palette = colors.colors
 
