@@ -1,17 +1,30 @@
 #!/usr/bin/env python
 import os
 import urwid
+import panwid
+from datetime import datetime
+import panwid.keymap
 
+panwid.keymap.KEYMAP_GLOBAL = {
+    "movement": {
+        "k": "up",
+        "j": "down",
+    }
+}
 palette = [
     (None,  'light gray', 'black'),
     ('reversed', 'standout', ''),
-    ('body', 'yellow', 'light blue'),
-    ('bodyrev', 'yellow', 'dark red'),
-    ('dirs', 'black', 'light blue'),
+    ('body', 'standout', 'white'),
+    ('bodyrev', 'yellow', 'white'),
+    ('dirs', 'black', 'light red'),
     ('dirsrev', 'white', 'dark red'),
-    ('bg', 'black', 'dark blue'),]
+    ('bg', 'black', 'dark blue'),
+    ("reveal_focus","black","yellow"),
+    ("text_highlight", "yellow,bold",""),]
 
-class BrowserPanel(urwid.WidgetPlaceholder):
+from panwid.keymap import *
+
+class BrowserPanel(KeymapMovementMixin, urwid.WidgetPlaceholder):
     def __init__(self, path):
         self.rootPath = '/'
         self.previousPath = self.rootPath
@@ -59,8 +72,14 @@ def exit_program(key):
 def main():
     p1 = BrowserPanel('/')
     p2 = BrowserPanel('/')
-    main = urwid.Columns([p1, p2])
-    loop = urwid.MainLoop(main, palette, unhandled_input=exit_program)
+    sub_main = urwid.Columns([p1, p2])
+    title = "PyFi: A terminal based file manager in Python"
+    today = datetime.now()
+    today_f  = today.strftime("%d/%m/%Y %H:%M:%S")
+    header_t = urwid.AttrMap(urwid.Text(('text_highlight', f"{title}")), 'reveal_focus')
+    footer_t= urwid.AttrMap(urwid.Text(('text_highlight', f"{today_f}")), 'reveal_focus')
+    main_frame = urwid.Frame(sub_main, header=header_t, footer=footer_t)
+    loop = urwid.MainLoop(main_frame, palette, unhandled_input=exit_program)
     loop.run()
 
 if __name__ == '__main__':
