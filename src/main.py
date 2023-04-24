@@ -10,6 +10,18 @@ panwid.keymap.KEYMAP_GLOBAL = {
     "movement": {
         "k": "up",
         "j": "down",
+        "h": "left",
+        "l": "right",
+        "page up": "page up",
+        "page down": "page down",
+        "ctrl up": ("cycle", [1]),
+        "ctrl down": ("cycle", [-1]),
+        "home": "home",
+        "end": "end",
+        "/": "complete prefix",
+        "?": "complete substring",
+        "ctrl p": "complete_prev",
+        "ctrl n": "complete_next",
     }
 }
 PALETTE=colors.colors
