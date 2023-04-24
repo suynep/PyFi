@@ -2,6 +2,7 @@
 import os
 import urwid
 import panwid
+import colors
 from datetime import datetime
 import panwid.keymap
 
@@ -11,6 +12,7 @@ panwid.keymap.KEYMAP_GLOBAL = {
         "j": "down",
     }
 }
+PALETTE=colors.colors
 palette = [
     (None,  'light gray', 'black'),
     ('reversed', 'standout', ''),
