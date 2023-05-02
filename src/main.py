@@ -28,8 +28,8 @@ PALETTE=colors.colors
 palette = [
     (None,  'light gray', 'black'),
     ('reversed', 'standout', ''),
-    ('body', 'standout', 'white'),
-    ('bodyrev', 'yellow', 'white'),
+    ('body', 'dark red', 'white'),
+    ('bodyrev', 'black', 'white'),
     ('dirs', 'black', 'light red'),
     ('dirsrev', 'white', 'dark red'),
     ('bg', 'black', 'dark blue'),
@@ -44,6 +44,8 @@ class BrowserPanel(KeymapMovementMixin, urwid.WidgetPlaceholder):
         self.previousPath = self.rootPath
         self.currentPath = path
         self.fileList = sorted(os.listdir(self.currentPath))
+        self.currentHighlight = self.currentPath
+        self.currentWalker = None
         body = self.create_buttons()
         super(BrowserPanel, self).__init__(body)
 
@@ -72,21 +74,48 @@ class BrowserPanel(KeymapMovementMixin, urwid.WidgetPlaceholder):
                 body.append(urwid.AttrMap(button, 'dirs', focus_map='dirsrev'))
             else:
                 body.append(urwid.AttrMap(button, None, focus_map='bodyrev'))
+        self.currentWalker = urwid.SimpleFocusListWalker(body)
+        self.currentHighlight = self.currentWalker.get_focus()
         return urwid.AttrMap(urwid.LineBox(urwid.ListBox(
-            urwid.SimpleFocusListWalker(body)), self.currentPath), 'body')
+list_walker), f"{self.currentPath} path"), 'body')
     
     def update_body(self, button, choice):
         self.update_file_list(choice)
         self.original_widget = self.create_buttons()
+    
+    def handle_input(self, input):
+    	if input == 'q':
+        	raise urwid.ExitMainLoop()
+    	elif input == 'c':
+        	self.create_file()
+    	elif input == 'd':
+        	self.delete_file()
+    	elif input == 'r':
+        	self.rename_file()
+    	elif input == 'm':
+        	self.copy_file()
+    	else:
+        	self.change_dir(input)
+
+    def callback(self):
+       index = self.currentWalker.get_focus()[1] 
+       self.display_text()
+    
+  
+  # def create_file():
+   	
 
 def exit_program(key):
     if key == 'q':
         raise urwid.ExitMainLoop()
 
 def main():
+    home_path = os.path.expanduser('~')
     p1 = BrowserPanel('/')
-    p2 = BrowserPanel('/')
-    sub_main = urwid.Columns([p1, p2])
+    p2 = BrowserPanel(home_path)
+    p3 = urwid.Filler(urwid.Text(home_path))
+    print(p1.currentHighlight)
+    sub_main = urwid.Columns([p1, p2, p3])
     title = "PyFi: A terminal based file manager in Python"
     today = datetime.now()
     today_f  = today.strftime("%d/%m/%Y %H:%M:%S")
